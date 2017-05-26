@@ -1,0 +1,11 @@
+---
+- name: Provision the EC2 Server
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+
+  roles:
+    - genesis-amazon
+
+- include: cloud-status.yml
+- include: mumble.yml

@@ -1,0 +1,6 @@
+---
+mumble_home_dir: '/var/lib/mumble-server'
+mumble_user: 'mumble-server'
+mumble_group: 'mumble-server'
+mumble_home: '{{ mumble_home_dir | dirname }}'
+mumble_database: '/var/lib/mumble-server/mumble-server.sqlite'

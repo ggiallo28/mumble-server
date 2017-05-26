@@ -1,0 +1,96 @@
+---
+- name: Get the default SSH key
+  command: cat ~/.ssh/id_rsa.pub
+  register: ssh_key
+
+- name: Add the SSH key to Amazon under the name of 'mumble-ssh'
+  ec2_key:
+    name: mumble-ssh
+    key_material: '{{ ssh_key.stdout }}'
+    region: '{{ aws_region }}'
+    wait: yes
+
+- name: Create a security group
+  ec2_group:
+    name: '{{ aws_security_group }}'
+    description: Security Group for Mumble Server
+    region: '{{ aws_region }}'
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+      - proto: udp
+        from_port: 64738
+        to_port: 64738
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 64738
+        to_port: 64738
+        cidr_ip: 0.0.0.0/0
+    rules_egress:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+  register: ec2_security_group
+
+- name: Create the EC2 instance
+  ec2:
+    count: '{{ aws_instance_count }}'
+    group_id: '{{ ec2_security_group.group_id }}'
+    image: '{{ aws_image }}'
+    instance_type: '{{ aws_instance_type }}'
+    key_name: mumble-ssh
+    region: '{{ aws_region }}'
+    wait: true
+    instance_tags:
+      Name: '{{ aws_instance_name }}'
+  register: ec2
+
+- name: Set the instance variable
+  set_fact:
+    ec2_instance: '{{ ec2.instances[0] }}'
+
+- name: Show EC2 instance
+  debug:
+    msg: 'Following instance was created: {{ ec2_instance }}'
+    verbosity: 1
+
+- name: Wait until the server has finished booting and OpenSSH is accepting connections
+  wait_for:
+    host: '{{ ec2_instance.public_ip }}'
+    port: 22
+    search_regex: OpenSSH
+    timeout: 600
+
+- name: Allocate and associate Elastic IP
+  ec2_eip:
+    region: '{{ aws_region }}'
+    device_id: '{{ ec2_instance.id }}'
+  register: instance_eip
+
+- name: Create the in-memory inventory group
+  add_host:
+    name: '{{ instance_eip.public_ip }}'
+    groups: mumble-server-host
+    ansible_user: ubuntu
+    ansible_become: yes
+
+- name: Set the ipv4_address variable
+  set_fact:
+    ipv4_address: '{{ instance_eip.public_ip }}'
+
+- name: Set the server_name variable
+  set_fact:
+    server_name: "{{ aws_instance_name | regex_replace('\\s', '_') }}"
+
+- name: New EC2 servers are occasionally slow to process incoming SSH connections even after the OpenSSH daemon has started up. Pause for 90 seconds.
+  pause:
+    seconds: 90

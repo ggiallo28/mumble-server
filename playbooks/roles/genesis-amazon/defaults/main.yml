@@ -1,0 +1,7 @@
+---
+aws_instance_name: 'mumble-server'
+aws_instance_type: 't2.micro'
+aws_security_group: 'mumble-server'
+aws_image: 'ami-80861296' # Ubuntu 16.04
+aws_region: 'us-east-1'
+aws_instance_count: 1

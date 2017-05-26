@@ -1,0 +1,36 @@
+---
+- include: set-default-variables.yml
+
+- name: Update repositories
+  apt:
+    update_cache: yes
+
+- name: Install some prerequisites
+  apt:
+    pkg: python-software-properties
+    state: present
+
+- name: Add Mumble ppa
+  apt_repository:
+    repo: 'ppa:mumble/release'
+
+- name: Install Mumble Server
+  apt:
+    name: mumble-server
+    state: present
+
+- name: Add Mumble group
+  group:
+    name: '{{ mumble_group }}'
+    system: yes
+    state: present
+  become: yes
+
+- name: Configure Mumble Server
+  template:
+    src: murmur.ini.j2
+    dest: /etc/murmur.ini
+    owner: '{{ mumble_user }}'
+    group: '{{ mumble_group }}'
+    mode: 640
+  notify: Restart Mumble Server

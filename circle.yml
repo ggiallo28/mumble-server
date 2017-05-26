@@ -1,0 +1,13 @@
+machine:
+  python:
+    version: 3.6.1
+
+dependencies:
+  pre:
+    - pip install -r requirements.txt
+
+test:
+  override:
+    - ansible-lint playbooks/server.yml
+    - ansible-playbook playbooks/server.yml --syntax-check
+    - ansible-playbook --inventory-file inventory playbooks/server.yml
