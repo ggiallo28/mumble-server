@@ -11,3 +11,5 @@
       raw: apt update && apt install python -y
       args:
         executable: /bin/bash
+      tags:
+        - skip_ansible_lint

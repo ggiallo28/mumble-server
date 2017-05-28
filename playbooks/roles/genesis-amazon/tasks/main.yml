@@ -2,6 +2,8 @@
 - name: Get the default SSH key
   command: cat ~/.ssh/id_rsa.pub
   register: ssh_key
+  tags:
+    - skip_ansible_lint
 
 - name: Add the SSH key to Amazon under the name of 'mumble-ssh'
   ec2_key:

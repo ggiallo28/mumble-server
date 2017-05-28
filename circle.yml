@@ -9,5 +9,4 @@ dependencies:
 test:
   override:
     - ansible-lint playbooks/server.yml
-    - ansible-playbook playbooks/server.yml --syntax-check
-    - ansible-playbook --inventory-file inventory playbooks/server.yml
+    - ansible-playbook playbooks/vagrant.yml
