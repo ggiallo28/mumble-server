@@ -9,4 +9,3 @@ dependencies:
 test:
   override:
     - ansible-lint playbooks/server.yml
-    - ansible-playbook --inventory-file inventory playbooks/ci.yml

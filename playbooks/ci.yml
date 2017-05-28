@@ -1,9 +1,0 @@
-- include: python.yml
-
-- name: Prepare the vagrant VM for Ansible
-# =========================================
-  hosts: all
-  remote_user: 'root'
-  become: true
-
-- include: mumble.yml
