@@ -42,5 +42,5 @@
 
 - name: Set SuperUser password
   shell: murmurd -ini {{ mumble_ini_location }} -supw {{ mumble_superuser_pw }}
-  when: {{ mumble_superuser_pw != '' }}
+  when: mumble_superuser_pw != ''
   notify: Restart Mumble Server
