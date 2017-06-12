@@ -2,3 +2,4 @@
 *.retry
 
 /.vagrant
+/playbooks/overrides.yml
