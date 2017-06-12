@@ -4,7 +4,11 @@
   connection: local
   gather_facts: yes
 
+  vars_files:
+    - ./overrides.yml
+
   roles:
+    # Taken from https://github.com/jlund/streisand
     - genesis-amazon
 
 - include: cloud-status.yml
