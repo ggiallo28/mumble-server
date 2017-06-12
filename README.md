@@ -4,13 +4,13 @@
 
 These Ansible playbooks will create a [Mumble](https://wiki.mumble.info) server on a [t2.micro EC2 instance](https://aws.amazon.com/ec2/instance-types/).
 
-Create to [Streisand](https://github.com/jlund/streisand) for the EC2 roles.
+Credit to [Streisand](https://github.com/jlund/streisand) for the EC2 roles.
 
 ## Requirements
 
 ### AWS Access
 
-Ensure you have your AWS access keys. You can get them [here](https://console.aws.amazon.com/iam/home?#security_credential)
+Ensure you have your AWS access keys. You can get them [here](https://console.aws.amazon.com/iam/home?#security_credential).
 
 ### Ansible
 
